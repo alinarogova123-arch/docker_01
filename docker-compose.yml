@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  
+  compiler: 
+    image: mrfinders/static-jinja-plus:${SJP_VERSION:-latest}
+    volumes:
+      - ./${LOCAL_SRC_DIR:-templates}:/opt/staticjinjaplus/templates
+      - ./${LOCAL_OUT_DIR:-build}:/opt/staticjinjaplus/build
+    command: ["python", "main.py", "--srcpath", "templates", "--outpath", "build"]
+
+  watcher:
+    image: mrfinders/static-jinja-plus:${SJP_VERSION:-latest}
+    volumes:
+      - ./${LOCAL_SRC_DIR:-templates}:/opt/staticjinjaplus/templates
+      - ./${LOCAL_OUT_DIR:-build}:/opt/staticjinjaplus/build
+    command: ["python", "main.py", "--srcpath", "templates", "--outpath", "build", "-w"]
+  
+  build-ubuntu:
+    build:
+      context: .
+      dockerfile: Dockerfile.ubuntu
+    image: mrfinders/static-jinja-plus:latest
+
+  build-slim:
+    build:
+      context: .
+      dockerfile: Dockerfile.slim
+    image: mrfinders/static-jinja-plus:slim
